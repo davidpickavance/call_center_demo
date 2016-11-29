@@ -8,8 +8,6 @@ import twilio.twiml
 import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'F34TF$($e34D'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:TrudyLovesTwilio!1@localhost/ccd_calls'
 fake = Factory.create()
 alphanumeric_only = re.compile('[\W_]+')
 phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
@@ -61,7 +59,7 @@ def voice():
 @app.route("/incoming_from_pstn", methods=['POST'])
 def incoming_from_pstn():
     resp=twilio.twiml.Response()
-    with resp.gather(numDigits=1, action="/ivr_first_level", methods='POST') as g:
+    with resp.gather(numDigits=1, action="/ivr_first_level") as g:
         g.say("Welcome do your demo call center. Press one for sales or two for support.", voice="alice")
     return Response(str(resp), mimetype='text/xml')
 
@@ -91,40 +89,17 @@ def ivr_first_level():
 
 @app.route("/assignment_callback_OK", methods=['POST'])
 def assignment_callback():
-    """Respond to assignment callbacks with empty 200 response"""
+    """Respond to assignment callbacks with an acceptance 200 response"""
 
-    task_sid = request.form.get("TaskSid")
-    workspace_sid = request.form.get("WorkspaceSid")
-    worker_sid = request.form.get("WorkerSid")
-    worker_attribues = request.form.get("WorkerAttributes")
-    task = taskrouterclient.tasks(workspace_sid).get(task_sid)
-    task_attributes = json.loads(task.attributes)
-    call_sid = task_attributes["call_sid"]
-    print worker_attribues
-
-    restclient.calls.create(url="http://ae07e6e2.ngrok.io/client_into_conference",
-                            to="client:ecassin",
-                            from_="client:"+task_sid)
-
-    myJson = jsonify(instruction="redirect", 
-              call_sid=call_sid, 
-              url="http://ae07e6e2.ngrok.io/cust_into_conference",
-              accept="yes")
-    resp = Response(myJson, status=200, mimetype='application/json')
+    #print request.form.keys()
+    #print request.form['WorkerAttributes']
+    contact_uri = json.loads(request.form['WorkerAttributes'])["contact_uri"]
+    caller_id = json.loads(request.form["TaskAttributes"])["from"]
+    print contact_uri
+    print caller_id
+    ret = '{"instruction": "dequeue", "from": "' + caller_id + '"}'
+    resp = Response(response=ret, status=200, mimetype='application/json')
     return resp
-
-@app.route("/cust_into_conference", methods=['POST'])
-def cust_into_conference():
-    print request.form.iteritems()
-    resp = twilio.twiml.Response()
-    return Response(str(resp), mimetype='text/xml')
-
-@app.route("/client_into_conference", methods=['POST'])
-def client_into_conference():
-    print request.form.keys()
-    print request.form.get("From")[7:]
-    resp = twilio.twiml.Response()
-    return Response(str(resp), mimetype='text/xml')
 
 if __name__ == '__main__':
     app.run(debug=True)
