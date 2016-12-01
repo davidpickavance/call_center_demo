@@ -1,9 +1,10 @@
 import os, re;
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template
 from faker import Factory
 from twilio.util import TwilioCapability
 from twilio.rest import TwilioTaskRouterClient
 from twilio.rest import TwilioRestClient
+from twilio.task_router import TaskRouterWorkerCapability
 import twilio.twiml
 import json
 
@@ -13,6 +14,7 @@ alphanumeric_only = re.compile('[\W_]+')
 phone_pattern = re.compile(r"^[\d\+\-\(\) ]+$")
 
 voice_workflow_sid = "WWdd39202d83add0db3cc824f547a33870"
+workspace_sid = "WS9842cc918b356da74bf34adc105c3487"
 account_sid = os.environ['TWILIO_ACCOUNT_SID']
 auth_token = os.environ['TWILIO_AUTH_TOKEN']
 application_sid = os.environ['TWILIO_TWIML_APP_SID']
@@ -21,7 +23,18 @@ restclient = TwilioRestClient(account_sid, auth_token)
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    # For this very basic demo, we're going add taskrouter.js for
+    # a fixed worker. In a real call center, we would ask the user
+    # to log on and find which worker they are from a database
+    worker_sid = "WKff0e117adef769bd5189da92a8676dcc"
+
+    worker_capability = TaskRouterWorkerCapability(account_sid, auth_token, workspace_sid, worker_sid)
+    worker_capability.allow_activity_updates()
+    worker_capability.allow_reservation_updates()
+
+    worker_token = worker_capability.generate_token()
+
+    return render_template('index.html', worker_token=worker_token)
 
 @app.route('/token', methods=['GET'])
 def token():
