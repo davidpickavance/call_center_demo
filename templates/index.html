@@ -9,14 +9,22 @@
         .top-margin{
             margin-top: 1em;
         }
+        .blue-background{
+            background-color: #BBBBFF
+        }
+        .green-background{
+            background-color: #BBFFBB
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row top-margin">
+            <h3>Twilio Client:</h3>
+        </div>
+        <div class="row well">
             <div class="col-xs-4" id="controls">
-                <div id="info">
-                    <p>Twilio Client</p>
+                <div id="info">   
                     <div id="client-name"></div>
                 </div>
             </div>
@@ -26,39 +34,38 @@
                     <input type="text" class="form-control" id="phone-number" placeholder="Enter a phone # or client name">
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary" id="button-call">Call</button>
-                    <button type="button" class="btn btn-primary" id="button-hangup">Hangup</button>
+                    <button type="button" class="btn btn-success" id="button-call">Call</button>
+                    <button type="button" class="btn btn-danger" id="button-hangup">Hangup</button>
                 </div>
             </div>
             <div id="log" class="col-xs-4"></div>
         </div>
-        <div class="row top-margin">
+        <div class="row">
+            <h3>Taskrouter:</h3>
+        </div>
+        <div class="row well">
             <div class="col-xs-4 col-xs-offset-4">
                 <section class="agent-activity offline">
-                    <h3 class="activity" style="color:red;">Offline</h3>
+                    <h3 class="activity alert alert-danger">Offline</h3>
                     <button class="btn btn-success change-activity" data-next-activity="Idle">Go Available</button>
                 </section>
                 <section class="agent-activity idle">
-                    <h3 class="activity" style="color:green;">Available</h3>
+                    <h3 class="activity alert alert-success">Available</h3>
                     <button class="btn btn-danger change-activity" data-next-activity="Offline">Go Offline</button>
                 </section>
                 <section class="agent-activity reserved">
-                    <h3 class="activity" style="color:orange;">Reserved</h3>
+                    <h3 class="activity alert alert-info">Reserved</h3>
                 </section>
                 <section class="agent-activity busy">
-                    <h3 class="activity" style="color:red;">Busy</h3>
+                    <h3 class="activity alert alert-danger">Busy</h3>
                 </section>
                 <section class="agent-activity wrapup">
-                    <h3 class="activity" style="color:orange;">Wrap-Up</h3>
+                    <h3 class="activity alert alert-info">Wrap-Up</h3>
                     <button class="btn btn-success change-activity" data-next-activity="Idle">Go Available</button>
                     <button class="btn btn-danger change-activity" data-next-activity="Offline">Go Offline</button>
                 </section>
             </div>
-            <div class="col-xs-4">
-                <section class="log">
-                    <textarea id="log" readonly="true"></textarea>
-                </section>
-            </div>
+            <div id="tlog" class="col-xs-4"></div>
         </div>
     </div>
 
@@ -159,8 +166,8 @@
         /* Other stuff */
 
         function logger(message) {
-            var log = document.getElementById('log');
-            log.value += "\n> " + message;
+            var log = document.getElementById('tlog');
+            log.innerHTML += '<p>&gt;&nbsp;' + message + '</p>';
             log.scrollTop = log.scrollHeight;
         }
 
