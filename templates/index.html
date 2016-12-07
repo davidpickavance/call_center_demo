@@ -19,32 +19,84 @@
 </head>
 <body>
     <div class="container">
-        <div class="row top-margin">
-            <h3>Twilio Client:</h3>
-        </div>
-        <div class="row well">
-            <div class="col-xs-4" id="controls">
-                <div id="info">   
-                    <div id="client-name"></div>
-                </div>
-            </div>
-            <div class="col-xs-4" id="call-controls">
-                <div class="form-group">
-                    <label for="phone-number">Make a Call:</label>
-                    <input type="text" class="form-control" id="phone-number" placeholder="Enter a phone # or client name">
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-success" id="button-call">Call</button>
-                    <button type="button" class="btn btn-danger" id="button-hangup">Hangup</button>
-                </div>
-            </div>
-            <div id="log" class="col-xs-4"></div>
+        <div class="row">
+            <h1> </h1>
         </div>
         <div class="row">
-            <h3>Taskrouter:</h3>
+            <div class="col-xs-3 col-xs-offset-6 well" id="call-controls">
+                <div class="row" id="client-name"></div>
+                <div class="row">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="phone-number" placeholder="Enter a phone # or client name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-1" onclick="number_write(1);">1</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-2" onclick="number_write(2);">2</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-3" onclick="number_write(3);">3</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-4" onclick="number_write(4);">4</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-5" onclick="number_write(5);">5</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-6" onclick="number_write(6);">6</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-7" onclick="number_write(7);">7</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-8" onclick="number_write(8);">8</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-9" onclick="number_write(9);">9</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info" id="button-del" onclick="number_del;">Del</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" id="button-0" onclick="number_write(0);">0</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info" id="button-clr" onclick="number_clear;">Clr</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success" id="button-call"><span class="glyphicon glyphicon-earphone"></span></button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger" id="button-hangup"><span class="glyphicon glyphicon-phone-alt"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="log" class="col-xs-3"></div>
         </div>
-        <div class="row well">
-            <div class="col-xs-4 col-xs-offset-4">
+        <div class="row">
+            <div class="col-xs-3 col-xs-offset-6">
                 <section class="agent-activity offline">
                     <h3 class="activity alert alert-danger">Offline</h3>
                     <button class="btn btn-success change-activity" data-next-activity="Idle">Go Available</button>
@@ -65,7 +117,7 @@
                     <button class="btn btn-danger change-activity" data-next-activity="Offline">Go Offline</button>
                 </section>
             </div>
-            <div id="tlog" class="col-xs-4"></div>
+            <div id="tlog" class="col-xs-3"></div>
         </div>
     </div>
 
@@ -180,6 +232,26 @@
             registerTaskRouterCallbacks();
             bindAgentActivityButtons();
         };
+
+        function number_write(number) {
+            var text_box = document.getElementById("phone-number");
+            if (number >= 0 && number <= 9){
+                if(isNaN(text_box.value)){
+                    text_box.value = 0;
+                }
+                text_box.value = (text_box.value * 10) + number;
+            }
+        }
+
+        function number_clear() {
+            var text_box = document.getElementById("phone-number");
+            test_box.value = 0;
+        }
+
+        function number_del() {
+            var text_box = document.getElementById("phone-number");
+            text_box.value = (text_box.value - text_box.value % 10) / 10;
+        }
     </script>
 
 </body>
